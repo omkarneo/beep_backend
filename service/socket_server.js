@@ -22,6 +22,19 @@ const socketServer = (server) => {
 
             io.emit(roomId, message.messages);
         });
+        socket.on("logout_with_id", async (id) => {
+            var data=await usermodel.findOneAndUpdate({ _id: id }, {
+                status: "offline"
+            });
+            
+            console.log(`logout------ ${data.phonenumber}`);
+
+            io.emit("status_receviers", {
+              number: data.phonenumber,
+              Status: "Offline",
+            });
+
+        })
         socket.on("logout", async (phoneNumber) => {
             await usermodel.findOneAndUpdate({ phonenumber: phoneNumber }, {
                 status: "offline"

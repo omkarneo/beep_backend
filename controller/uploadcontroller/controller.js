@@ -2,7 +2,8 @@ const profileuploadcontroller = (req, res) => {
     if (!req.file) {
         return res.status(400).send('No file uploaded.');
     }
-    const fileUrl = `/uploads/profile/${req.file.filename}`;
+    var filename=req.file.path.split("/").pop();
+    const fileUrl = `/uploads/profile/${filename}`;
 
     res.json({
         message: 'File uploaded successfully!',
@@ -13,19 +14,23 @@ const statusuploadcontroller = (req, res) => {
     if (!req.file) {
         return res.status(400).send('No file uploaded.');
     }
-    const fileUrl = `/uploads/status/${req.file.filename}`;
-
+    var filname = req.file.path.split("/").pop();
+    const fileUrl = `/uploads/status/${filname}`;
+  console.log(req.file);
     res.json({
         message: 'File uploaded successfully!',
         fileUrl,
     });
 }
 const chatsuploadcontroller = (req, res) => {
+
     if (!req.file) {
         return res.status(400).send('No file uploaded.');
     }
-    const fileUrl = `/uploads/chats/${req.file.filename}`;
-
+      var filename = req.file.path.split("/").pop();
+    const fileUrl = `/uploads/chats/${filename}`;
+  
+    
     res.json({
         message: 'File uploaded successfully!',
         fileUrl,
