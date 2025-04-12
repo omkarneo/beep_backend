@@ -2,11 +2,13 @@ const mongodb = require("mongoose")
 
 
 const mongoconnection = () => {
-  mongodb.connect(
-    `mongodb+srv://${process.env.USERNAME}:${process.env.PASS}@cluster0.jhv9f.mongodb.net/beep`
-  ).then(() => {
-    console.log("Mongodb Connected")
-  });
+  mongodb
+    .connect(
+      `mongodb+srv://${process.env.MONGOUSERNAME}:${process.env.PASS}@cluster0.jhv9f.mongodb.net/beep`
+    )
+    .then(() => {
+      console.log("Mongodb Connected");
+    });
 };
 
 // Mongo User Model
