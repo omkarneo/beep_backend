@@ -4,7 +4,7 @@ const mongodb = require("mongoose")
 const mongoconnection = () => {
   mongodb
     .connect(
-      `mongodb+srv://${process.env.MONGOUSERNAME}:${process.env.PASS}@cluster0.jhv9f.mongodb.net/beep`
+      `mongodb+srv://${process.env.MONGOUSERNAME}:${process.env.PASS}@cluster0.jhv9f.mongodb.net/${process.env.PRODUCTION=="true"?"beep":"beep-stage"}`
     )
     .then(() => {
       console.log("Mongodb Connected");

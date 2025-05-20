@@ -23,8 +23,11 @@ const UserSchema = new Schema({
     type: String,
     required: true,
   },
-
   photos: {
+    type: String,
+    required: false,
+  },
+  fcmToken: {
     type: String,
     required: false,
   },
@@ -41,6 +44,10 @@ const UserSchema = new Schema({
       type: Date,
       required: false,
     },
+  },
+  activeRoom:{
+    type:String,
+     required: false,
   },
   rooms: [{
     roomId: {

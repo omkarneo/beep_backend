@@ -1,3 +1,4 @@
 **/public/uploads
 node_modules
 .env
+service/beep-moblie-firebase-adminsdk-fbsvc-c3c00ab5fe.json

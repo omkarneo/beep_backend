@@ -85,7 +85,8 @@ const otpController = async (req, res) => {
                 let token = jwtsigin(payload._id);
 
                 await usermodel.findOneAndUpdate({ phonenumber: req.body.number }, {
-                    status: req.status
+                    status: "Online",
+                    fcmToken:req.body.token
                 });
                 const io = req.app.get('socketio');
                 io.emit("status_receviers", { "number": req.body.number, "Status": "Online" })

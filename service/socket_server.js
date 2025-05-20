@@ -1,5 +1,6 @@
 const socketIo = require("socket.io");
 const { usermodel, roommodel } = require("./mongoose")
+const { sendPushNotification } = require("./firebase");
 
 
 const socketServer = (server) => {
@@ -7,21 +8,55 @@ const socketServer = (server) => {
     // 🔥 WebSocket Handling
     io.on("connection", (socket) => {
         console.log("✅ New client connected:", socket.id);
-        socket.on("status_channel", async ({ userid, status }) => {
+        socket.on("connect_room", async ({ userid, roomid }) => {
+            console.log(`Connect Data ${userid} ${roomid}`);
+            if(userid!=undefined){
+                await usermodel.findByIdAndUpdate({ _id: userid }, { activeRoom: roomid });
+            }
+        
         })
+        socket.on("disconnect_room", async ({ userid }) => {
+          console.log(`disConnect Data ${userid} `);
+          if (userid != undefined) {
+            await usermodel.findByIdAndUpdate(
+              { _id: userid },
+              { activeRoom: "" }
+            );
+          }
+        });
         // Send Message
         socket.on("sendMessage", async ({ senderId, roomId, message, messagetype, image }) => {
-            var userdata = await usermodel.find({ _id: senderId });
+            var userdata = await usermodel.findOne({ _id: senderId });
             const newMessage = { senderId, senderName: userdata.firstName, message, senderNumber: userdata.phonenumber, timestamp: new Date(), messagetype, image };
             await roommodel.findByIdAndUpdate({ _id: roomId }, {
                 $push: {
                     messages: newMessage
                 }
             })
-            var message = await roommodel.findOne({ _id: roomId })
+            var responsemessage = await roommodel.findOne({ _id: roomId })
+            responsemessage.Users.map(async (value)=>{
 
-            io.emit(roomId, message.messages);
+                
+                if (value.userId != senderId) {
+                     var reciverdata = await usermodel.findOne({ _id: value.userId });
+                    if(reciverdata.activeRoom!=roomId){
+                          sendPushNotification(
+                            newMessage.senderName,
+                            message,
+                            value.userId,
+                            "",
+                            roomId
+                          );
+                    }
+                
+                }
+            })
+            
+            
+            io.emit(roomId, responsemessage.messages);
         });
+
+ 
         socket.on("logout_with_id", async (id) => {
             var data=await usermodel.findOneAndUpdate({ _id: id }, {
                 status: "offline"
@@ -55,7 +90,10 @@ const socketServer = (server) => {
             var data = await usermodel.findOneAndUpdate({ _id: id }, {
                 status: "Online"
             });
-            io.emit("status_receviers", { "number": data.phonenumber, "Status": "Online" })
+            if(data!=null){
+            io.emit("status_receviers", { number: data.phonenumber, Status: "Online" });
+            }
+           
         })
 
         // User disconnects

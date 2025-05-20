@@ -1,9 +1,6 @@
 const jwt = require("../service/jwt");
-const mongo = require("../service/mongoose")
+const { mongo, usermodel } = require("../service/mongoose");
 
-// Mongo otp
-require("../models/users");
-const usermodel = mongo.mongodb.model("user");
 
 const veriytoken = async (req, res, next) => {
   try {

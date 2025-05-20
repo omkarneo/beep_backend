@@ -10,6 +10,10 @@ const {
 // env
 require('dotenv').config()
 
+// Firebase Intailized
+const { initializeFireBase } = require("./service/firebase");
+initializeFireBase();
+
 
 // Body Parser for Requesting Body
 const bodyparse = require('body-parser');
